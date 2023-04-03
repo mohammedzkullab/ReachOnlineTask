@@ -30,3 +30,23 @@ export interface InputProps
     className?: string;
     inputClassName?: string;
 }
+
+//skeleton
+
+interface SkeletonProps extends HTMLProps<HTMLSpanElement> {
+    width?: number;
+    height?: number;
+    variant?: "circular" | "rectangular" | "rounded";
+    numberOfLoaders?: number
+}
+
+export type SkeletonType = FC<SkeletonProps>;
+
+//Table 
+export interface TableProps {
+    columns: string[];
+    fetchUrl: string;
+    withoutSearch?: boolean;
+    className?: string;
+}
+

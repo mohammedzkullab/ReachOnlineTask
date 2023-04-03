@@ -16,11 +16,7 @@ const LoginForm = () => {
     "/vendor/login",
     {
       method: "post",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(loginData),
+      body: loginData,
     },
     dataFunction
   );
@@ -33,18 +29,6 @@ const LoginForm = () => {
 
   const handleLogin = (e: any) => {
     e.preventDefault();
-    // fetch("https://kayanpay.pro/api/v1/vendor/login", {
-    //   method: "post",
-    //   headers: {
-    //     accept: "application/json",
-    //     "content-type": "application/json",
-    //   },
-    //   body: JSON.stringify(loginData),
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     auth.login(data.data?.token, data?.data);
-    //   });
     fetchData();
   };
   return (
@@ -74,7 +58,7 @@ const LoginForm = () => {
         <Button className="w-full mt-4" type="submit" loading={loading}>
           Submit
         </Button>
-        <p> {error && error}</p>
+        <p className="text-red-400 mt-4 text-md">{error?.message}</p>
       </form>
     </Card>
   );
