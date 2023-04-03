@@ -18,8 +18,8 @@ export const DashboardLayout: DashboardLayoutType = ({
       >
         <div className={`flex flex-col-reverse xl:gap-16 md:flex-row w-full`}>
           <SideMenu />
-          <div className="w-full flex flex-col-reverse lg:flex-row gap-4 lg:gap-0 xl:gap-8 mt-4 md:mt-8 lg:mt-16 xl:mt-20 ">
-            <div className="flex flex-col w-full xl:w-[70%] h-full px-4">
+          <div className="w-full flex flex-col-reverse lg:flex-row gap-4 lg:gap-0 xl:gap-8 mt-4 md:my-8  ">
+            <div className="flex flex-col w-full xl:w-[90%] h-full px-4">
               {children}
             </div>
           </div>

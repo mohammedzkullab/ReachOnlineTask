@@ -8,7 +8,7 @@ const Dashboard = () => {
       <Table
         columns={columns}
         fetchUrl="/vendor/manufacturers"
-        withoutSearch={true}
+        withoutSearch={false}
       />
     </DashboardLayout>
   );

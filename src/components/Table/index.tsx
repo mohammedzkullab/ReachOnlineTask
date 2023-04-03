@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import Search from "./Search";
-import { Card, Dropdown, Skeleton, Switcher } from "components";
+import { Button, Card, Dropdown, Modal, Skeleton, Switcher } from "components";
 import useFetch from "hooks/useFetch";
 import useAuth from "hooks/useAuth";
 import { TableProps } from "components/types";
 import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { deleteItem } from "./utils/deleteItem";
+import { changeStatus } from "./utils/changeStatus";
+import useModal from "hooks/useModal";
+import AddProductForm from "./AddProductForm";
 
 const SORT_ASC = "asc";
 const SORT_DESC = "desc";
@@ -17,18 +20,18 @@ export const Table = ({
   className = "",
 }: TableProps) => {
   const [data, setData] = useState([]);
-  const [perPage, setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState("10");
   const [isMutate, setisMutate] = useState(false);
   const [currentLang, setCurrentLang] = useState("en");
-  const [sortColumn, setSortColumn] = useState(columns[2]);
-  const [sortOrder, setSortOrder] = useState("asc");
   const [search, setSearch] = useState("");
+  const { isOpen, closeModal, openModal } = useModal();
   const auth = useAuth();
   const { loading, error, fetchData } = useFetch(
-    `${fetchUrl}?${search && `search=${search}&`}per_page=${perPage}`,
+    `${fetchUrl}?per_page=${perPage}${search && `&search=${search}`}`,
     {
       headers: {
         Authorization: `Bearer ${auth?.token}`,
+        "Accept-Language": currentLang,
       },
     },
     (data) => {
@@ -39,15 +42,6 @@ export const Table = ({
   useEffect(() => {
     fetchData();
   }, [search, perPage, fetchUrl, isMutate]);
-
-  const handleSort = (column: any) => {
-    if (column === sortColumn) {
-      sortOrder === SORT_ASC ? setSortOrder(SORT_DESC) : setSortOrder(SORT_ASC);
-    } else {
-      setSortColumn(column);
-      setSortOrder(SORT_ASC);
-    }
-  };
 
   const items = [
     {
@@ -65,25 +59,34 @@ export const Table = ({
   ];
 
   return (
-    <div className="mt-8">
-      {!withoutSearch && <Search setSearch={setSearch} />}
-      <Card className={className}>
-        <table className="w-full text-center">
+    <div className="my-4">
+      <h1 className="text-2xl font-semibold my-4">Products </h1>
+      <div className="flex items-center justify-between w-full gap-3 mb-6">
+        <Search setSearch={setSearch} />
+        <Button
+          onClick={openModal}
+          className="bg-red-600 hover:bg-red-500 text-sm px-2 py-2 md:px-5 md:py-4 md:text-base "
+        >
+          Add Product
+        </Button>
+
+        <AddProductForm
+          isOpen={isOpen}
+          closeModal={closeModal}
+          openModal={openModal}
+        />
+      </div>
+
+      <Card
+        className={`sm:min-w-[600px] overflow-x-scroll md:overflow-auto ${className}`}
+      >
+        <table className="w-full text-center ">
           <thead className="bg-gray-light text-gray-dark mb-4">
             <tr>
               {columns.map((column: any) => {
                 return (
-                  <th
-                    key={column}
-                    onClick={(e) => handleSort(column)}
-                    className="py-4"
-                  >
-                    <p className="inline-flex items-center gap-2 cursor-pointer">
-                      {column.toUpperCase().replace("_", " ")}
-                      {column === sortColumn ? (
-                        <>{sortOrder === SORT_ASC && <span>^</span>}</>
-                      ) : null}
-                    </p>
+                  <th key={column} className="p-4">
+                    {column.toUpperCase().replace("_", " ")}
                   </th>
                 );
               })}
@@ -117,7 +120,11 @@ export const Table = ({
                       {d.sort_order}
                     </td>
                     <td className="py-4 text-gray-400 font-bold text-center">
-                      <Switcher status={d.status} />
+                      <Switcher
+                        id={d.id}
+                        status={d.status}
+                        action={() => changeStatus(d.id, d.status, auth.token)}
+                      />
                     </td>
                     <td className="py-4 text-gray-400 font-bold text-center">
                       <Dropdown id={d.id} title="Actions" items={items} />
@@ -130,7 +137,7 @@ export const Table = ({
                 <td colSpan={columns.length + 1}>
                   <div className="spinner-border" role="status">
                     <Skeleton
-                      width={1020}
+                      width={1320}
                       className="py-4 mt-4"
                       numberOfLoaders={7}
                     />
@@ -140,7 +147,16 @@ export const Table = ({
             )}
           </tbody>
           <tfoot className="">
-            <td>111</td>
+            <td>
+              <select
+                className="my-4 outline-none w-1/4 bg-gray-200 rounded p-4 py-2"
+                onChange={(e) => setPerPage(e.target.value)}
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+            </td>
             <td></td>
             <td></td>
             <td></td>

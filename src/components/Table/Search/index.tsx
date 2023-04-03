@@ -1,3 +1,4 @@
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { useState, useEffect } from "react";
 // import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon } from "lib/@heroicons";
 // import SearchFilter from "./SearchFilter";
@@ -18,12 +19,12 @@ const Search = ({ setSearch: onSearchSubmit }: any) => {
     }
   }, [onSearchSubmit, term]);
   return (
-    <div className="relative mb-4 shadow-md">
-      {/* <MagnifyingGlassIcon
+    <div className="relative shadow-md w-[70%]">
+      <MagnifyingGlassIcon
         width={24}
         height={24}
         className="absolute inset-4"
-      /> */}
+      />
       <input
         type="search"
         placeholder="search"
@@ -31,12 +32,6 @@ const Search = ({ setSearch: onSearchSubmit }: any) => {
         onChange={(e) => setDebouncedTerm(e.target.value)}
         className="w-full border-none py-4 rounded px-16"
       />
-      {/* <AdjustmentsHorizontalIcon
-        width={24}
-        height={24}
-        className="absolute right-4 top-4 cursor-pointer"
-      /> */}
-      <div className="">{/* <SearchFilter /> */}</div>
     </div>
   );
 };

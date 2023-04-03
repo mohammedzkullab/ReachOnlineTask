@@ -1,6 +1,7 @@
 import type { InputProps } from "components/types";
 export const Input = ({
   label = "input",
+  labelClassName,
   id,
   inputType = "text",
   placeholder = "",
@@ -11,8 +12,8 @@ export const Input = ({
 }: InputProps) => {
   const classes = {
     wrapper: `w-full ${className || ""}`,
-    label: "text-gray-400 font-meduim text-left mb-2",
-    input: `border border-1 border-gray-400 outline-none my-4 ${
+    label: `text-gray-400 font-meduim text-left mb-2 ${labelClassName || ""}`,
+    input: `border border-1 border-gray-400 outline-none my-4 rounded ${
       inputClassName || ""
     }`,
     helperText: "inline-flex min-h-[20px] text-xs mt-1",
@@ -24,13 +25,20 @@ export const Input = ({
           {label}
         </label>
       )}
-      <input
-        id={id}
-        type={inputType}
-        className={classes.input}
-        {...rest}
-        placeholder={placeholder}
-      />
+
+      {inputType === "file" ? (
+        <div>
+          <input type="file" multiple accept="image/*" {...rest} />
+        </div>
+      ) : (
+        <input
+          id={id}
+          type={inputType}
+          className={classes.input}
+          {...rest}
+          placeholder={placeholder}
+        />
+      )}
       {helperText && <p className={classes.helperText}>{helperText}</p>}
     </div>
   );

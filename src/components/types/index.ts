@@ -29,6 +29,7 @@ export interface InputProps
     helperText?: string;
     className?: string;
     inputClassName?: string;
+    labelClassName?: string;
 }
 
 //skeleton
@@ -50,3 +51,14 @@ export interface TableProps {
     className?: string;
 }
 
+
+// Modal 
+
+export interface ModalProps {
+    isOpen: boolean,
+    openModal: () => void,
+    closeModal: () => void,
+    children: React.ReactNode,
+    actionFunc: () => void;
+    dialogTitle?: string;
+}
