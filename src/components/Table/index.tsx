@@ -10,6 +10,7 @@ import { changeStatus } from "./utils/changeStatus";
 import useModal from "hooks/useModal";
 import AddProductForm from "./AddProductForm";
 import EditProductForm from "./EditProductForm";
+import Pagination from "./Pagination";
 
 export const Table = ({
   columns,
@@ -18,6 +19,7 @@ export const Table = ({
   className = "",
 }: TableProps) => {
   const [data, setData] = useState([]);
+  const [pages, setPages] = useState({});
   const [perPage, setPerPage] = useState("10");
   const [isMutate, setisMutate] = useState(false);
   const [selectedId, setSelectedId] = useState("");
@@ -40,7 +42,7 @@ export const Table = ({
     },
     (data) => {
       setData(data.data);
-      console.log(data.data);
+      setPages(data.pages);
     }
   );
 
@@ -54,7 +56,6 @@ export const Table = ({
       title: "Edit",
       action: (id: any) => {
         setSelectedId(id);
-        console.log(selectedId);
         openModalEdit();
       },
     },
@@ -179,7 +180,9 @@ export const Table = ({
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
+            <td>
+              <Pagination pages={pages} />
+            </td>
           </tfoot>
         </table>
       </Card>
