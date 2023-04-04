@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Search from "./Search";
-import { Button, Card, Dropdown, Modal, Skeleton, Switcher } from "components";
+import { Button, Card, Dropdown, Skeleton, Switcher } from "components";
 import useFetch from "hooks/useFetch";
 import useAuth from "hooks/useAuth";
 import { TableProps } from "components/types";
@@ -25,6 +25,8 @@ export const Table = ({
   const [selectedId, setSelectedId] = useState("");
   const [currentLang, setCurrentLang] = useState("en");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { isOpen, closeModal, openModal } = useModal();
   const {
     isOpen: isOpenEdit,
@@ -33,7 +35,10 @@ export const Table = ({
   } = useModal();
   const auth = useAuth();
   const { loading, error, fetchData } = useFetch(
-    `${fetchUrl}?per_page=${perPage}${search && `&search=${search}`}`,
+    `${fetchUrl}?per_page=${perPage}${
+      search ? `&search=${search}` : ""
+    }&page=${currentPage}`,
+
     {
       headers: {
         Authorization: `Bearer ${auth?.token}`,
@@ -50,6 +55,15 @@ export const Table = ({
     fetchData();
   }, [search, perPage, fetchUrl, isMutate]);
 
+  const handleNextPaginate = () => {
+    setCurrentPage((prev) => prev + 1);
+    fetchData();
+  };
+
+  const handlePrevPaginate = () => {
+    setCurrentPage((prev) => prev - 1);
+    fetchData();
+  };
   const items = [
     {
       icon: <PencilIcon height={15} width={15} />,
@@ -166,23 +180,30 @@ export const Table = ({
               </tr>
             )}
           </tbody>
-          <tfoot className="">
-            <td>
-              <select
-                className="my-4 outline-none w-1/4 bg-gray-200 rounded p-4 py-2"
-                onChange={(e) => setPerPage(e.target.value)}
-              >
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-              </select>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <Pagination pages={pages} />
-            </td>
+          <tfoot>
+            <tr>
+              <td className="w-[35%]">
+                <select
+                  className="my-4 outline-none w-full xl:w-1/4 bg-gray-200 rounded p-4 py-2"
+                  onChange={(e) => setPerPage(e.target.value)}
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                </select>
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <Pagination
+                  pages={pages}
+                  currentPage={currentPage}
+                  handleNextPaginate={handleNextPaginate}
+                  handlePrevPaginate={handlePrevPaginate}
+                />
+              </td>
+            </tr>
           </tfoot>
         </table>
       </Card>
