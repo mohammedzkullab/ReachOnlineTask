@@ -59,6 +59,6 @@ export interface ModalProps {
     openModal: () => void,
     closeModal: () => void,
     children: React.ReactNode,
-    actionFunc: () => void;
+    actionFunc?: () => void;
     dialogTitle?: string;
 }

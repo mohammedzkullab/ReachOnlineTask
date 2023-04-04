@@ -1,9 +1,10 @@
 import { Tabs, FileUpload, Modal, Button } from "components";
 import { API_URL } from "data/constants";
 import useAuth from "hooks/useAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const AddProductForm = ({
+const EditProductForm = ({
+  id,
   setisMutate,
   isOpen,
   closeModal,
@@ -17,6 +18,26 @@ const AddProductForm = ({
   const [image, setImage] = useState("");
   const auth = useAuth();
 
+  useEffect(() => {
+    fetch(`${API_URL}/vendor/manufacturers/${id}`, {
+      method: "get",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${auth?.token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setFormData({
+          "name[ar]": data.data.name.ar,
+          "name[en]": data.data.name.en,
+          sort: data.data.sort_order,
+        });
+        setImage(data.data.image);
+      })
+      .catch((error) => console.error(error));
+  }, [id]);
+
   const handleChange = (e: any) => {
     setFormData((prev: any) => {
       return { ...prev, [e.target.name]: e.target.value };
@@ -25,19 +46,22 @@ const AddProductForm = ({
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    const formData = new FormData();
-
-    formData.append("name[ar]", formDatas["name[ar]"]);
-    formData.append("name[en]", formDatas["name[en]"]);
-    formData.append("sort", formDatas.sort.toLocaleString());
-    formData.append("image", image);
-
-    fetch(`${API_URL}/vendor/manufacturers`, {
-      method: "post",
+    console.log("first", formDatas);
+    fetch(`${API_URL}/vendor/manufacturers/${id}`, {
+      method: "put",
       headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${auth?.token}`,
       },
-      body: formData,
+      body: JSON.stringify({
+        name: {
+          ar: formDatas?.["name[ar]"],
+          en: formDatas?.["name[en]"],
+        },
+        sort: +formDatas.sort,
+        image: image,
+      }),
     })
       .then((res) => res.json())
       .then(() => {
@@ -55,7 +79,10 @@ const AddProductForm = ({
       openModal={openModal}
     >
       <form onSubmit={handleSubmit}>
-        <FileUpload file={image} setFile={setImage} />
+        <div className="inline-flex gap-3 w-full">
+          <FileUpload file={image} setFile={setImage} />
+          <img src={image} alt="preview" width={350} />
+        </div>
         <Tabs
           formData={formDatas}
           setFormData={setFormData}
@@ -80,4 +107,4 @@ const AddProductForm = ({
   );
 };
 
-export default AddProductForm;
+export default EditProductForm;

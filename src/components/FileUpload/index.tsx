@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from "react";
 
 function FileUpload({ file, setFile }: any) {
-  const [selected, setSelected] = useState<File>();
+  const [selected, setSelected] = useState<File>(file);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.length !== undefined) {
@@ -16,7 +16,7 @@ function FileUpload({ file, setFile }: any) {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
@@ -43,7 +43,11 @@ function FileUpload({ file, setFile }: any) {
               drop
             </p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              SVG, PNG, JPG or GIF (MAX. 800x400px)
+              SVG, PNG, JPG or GIF
+            </p>
+            <p className="text-gray-400 text-md mt-1">
+              {selected &&
+                `file name : ${selected.name} - file type :  ${selected.type} - file size : ${selected.size} Kb`}
             </p>
           </div>
           <input
@@ -52,13 +56,8 @@ function FileUpload({ file, setFile }: any) {
             name="image"
             className="hidden"
             onChange={handleFileChange}
-            required
           />
         </label>
-      </div>
-      <div className="text-gray-400 text-md mt-1">
-        {selected &&
-          `file name : ${selected.name} - file type :  ${selected.type} - file size : ${selected.size} Kb`}
       </div>
     </div>
   );

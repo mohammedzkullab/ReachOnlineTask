@@ -9,9 +9,7 @@ import { deleteItem } from "./utils/deleteItem";
 import { changeStatus } from "./utils/changeStatus";
 import useModal from "hooks/useModal";
 import AddProductForm from "./AddProductForm";
-
-const SORT_ASC = "asc";
-const SORT_DESC = "desc";
+import EditProductForm from "./EditProductForm";
 
 export const Table = ({
   columns,
@@ -22,9 +20,15 @@ export const Table = ({
   const [data, setData] = useState([]);
   const [perPage, setPerPage] = useState("10");
   const [isMutate, setisMutate] = useState(false);
+  const [selectedId, setSelectedId] = useState("");
   const [currentLang, setCurrentLang] = useState("en");
   const [search, setSearch] = useState("");
   const { isOpen, closeModal, openModal } = useModal();
+  const {
+    isOpen: isOpenEdit,
+    closeModal: closeModalEdit,
+    openModal: openModalEdit,
+  } = useModal();
   const auth = useAuth();
   const { loading, error, fetchData } = useFetch(
     `${fetchUrl}?per_page=${perPage}${search && `&search=${search}`}`,
@@ -36,6 +40,7 @@ export const Table = ({
     },
     (data) => {
       setData(data.data);
+      console.log(data.data);
     }
   );
 
@@ -47,7 +52,11 @@ export const Table = ({
     {
       icon: <PencilIcon height={15} width={15} />,
       title: "Edit",
-      action: () => console.log("clicked"),
+      action: (id: any) => {
+        setSelectedId(id);
+        console.log(selectedId);
+        openModalEdit();
+      },
     },
     {
       icon: <TrashIcon height={15} width={15} />,
@@ -74,7 +83,17 @@ export const Table = ({
           isOpen={isOpen}
           closeModal={closeModal}
           openModal={openModal}
+          setisMutate={setisMutate}
         />
+        {selectedId && (
+          <EditProductForm
+            id={selectedId}
+            isOpen={isOpenEdit}
+            closeModal={closeModalEdit}
+            openModal={openModalEdit}
+            setisMutate={setisMutate}
+          />
+        )}
       </div>
 
       <Card
@@ -160,7 +179,7 @@ export const Table = ({
             <td></td>
             <td></td>
             <td></td>
-            <td>123</td>
+            <td></td>
           </tfoot>
         </table>
       </Card>

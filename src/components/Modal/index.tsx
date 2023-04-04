@@ -45,21 +45,6 @@ export default function Modal({
                   {dialogTitle}
                 </Dialog.Title>
                 <div className="mt-2">{children}</div>
-
-                <div className="mt-4 flex justify-end gap-3 items-center">
-                  <Button
-                    className="inline-flex justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    cancle
-                  </Button>
-                  <Button
-                    className="inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    onClick={actionFunc}
-                  >
-                    Save Changes
-                  </Button>
-                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
